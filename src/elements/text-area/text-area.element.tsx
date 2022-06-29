@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const TextArea = ({ t, label, name, placeholder, onChange }: any) => {
+export const TextArea = ({ t, label, form, name, placeholder, onChange }: any) => {
     const handleChange = (e: { target: { value: string } }) => {
         onChange({ [name]: e.target.value });
     };
@@ -14,6 +14,7 @@ export const TextArea = ({ t, label, name, placeholder, onChange }: any) => {
                 rows={3}
                 id={name}
                 name={name}
+                value={form?.[name]}
                 onChange={handleChange}
                 className="form-control"
                 placeholder={t(placeholder)}

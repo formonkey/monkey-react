@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export const Password = ({ t, label, link, name, placeholder, onChange }: any) => {
+    const [show, setShow] = useState<boolean>(false);
+
     const handleChange = (e: { target: { value: string } }) => {
         onChange({ [name]: e.target.value });
     };
@@ -21,14 +23,14 @@ export const Password = ({ t, label, link, name, placeholder, onChange }: any) =
                 <input
                     id={name}
                     name={name}
-                    type="password"
                     onChange={handleChange}
                     className="form-control"
                     placeholder={t(placeholder)}
                     aria-describedby="password"
+                    type={show ? 'text' : 'password'}
                 />
-                <span className="input-group-text cursor-pointer">
-                    <i className="bx bx-hide"></i>
+                <span className="input-group-text cursor-pointer" onClick={() => setShow(!show)}>
+                    <i className={`bx bx-${show ? 'show' : 'hide'}`}></i>
                 </span>
             </div>
         </div>

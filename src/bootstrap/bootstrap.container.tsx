@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import { Authentication, Platform } from "../pages";
-import { MonkeyConf, useStore, StoreKeys } from "../elements";
+import { Authentication, Platform } from '../pages';
+import { HttpClient, MonkeyConf, useStore, StoreKeys } from '../elements';
 
 export const Bootstrap = () => {
     const { get } = useStore();

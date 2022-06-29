@@ -2,6 +2,7 @@ export { Form } from './form';
 export { Menu } from './menu';
 export { File } from './file';
 export { Role } from './roles';
+export { Multi } from './multi';
 export { Query } from './query';
 export { Table } from './table';
 export { Theme } from './theme';
@@ -12,6 +13,7 @@ export { Switch } from './switch';
 export { NavBar } from './nav-bar';
 export { Select } from './selects';
 export { NoData } from './no-data';
+export { Widgets } from './widgets';
 export { Password } from './password';
 export { Checkbox } from './checkbox';
 export { UserMenu } from './user-menu';
@@ -22,8 +24,10 @@ export { Datepicker } from './datepicker';
 export { Modal, useModal } from './modals';
 export { GenericView } from './generic-view';
 export { Notifications } from './notifications';
+export { GenericDetail } from './generic-detail';
 export { Store, useStore, StoreKeys } from './store';
 export { MonkeyConf, useMonkeyConf } from './monkey-conf';
 export { HttpClient, useHttpClient } from './http-client';
+
 
 export type { FormElementProps } from './form';

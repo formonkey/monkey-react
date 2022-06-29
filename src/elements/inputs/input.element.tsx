@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Input = ({ t, label, name, focus, placeholder, type, value, onChange }: any) => {
+export const Input = ({ t, label, name, form, focus, placeholder, type, value, onChange }: any) => {
     const handleChange = (e: { target: { value: string } }) => {
         onChange({ [name]: e.target.value });
     };
@@ -15,6 +15,7 @@ export const Input = ({ t, label, name, focus, placeholder, type, value, onChang
                 type={type}
                 name={name}
                 autoFocus={focus}
+                value={form?.[name] ?? ''}
                 defaultValue={value}
                 onChange={handleChange}
                 className="form-control"

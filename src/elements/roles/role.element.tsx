@@ -5,10 +5,10 @@ export const Role = ({ data, name, onChange, value, t }: any) => {
         value = value || [];
 
         const temp = [...value, ...e.target.value.split(',')].filter((key: string) =>
-            option.remove.indexOf(key)
+            option.remove?.indexOf(key)
         );
 
-        onChange({ [name]: temp });
+        onChange({ [name]: temp.filter((e: string) => temp.includes(e)) });
     };
 
     return (

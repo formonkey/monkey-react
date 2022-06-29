@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Avatar } from '../avatars';
 
-import { useHttpClient } from "../http-client";
-import { useMonkeyConf } from "../monkey-conf";
-import { StoreKeys, useStore } from "../store";
+import { useHttpClient } from '../http-client';
+import { useMonkeyConf } from '../monkey-conf';
+import { StoreKeys, useStore } from '../store';
 
 export const UserMenu = () => {
     const { t } = useTranslation();
     const { profile } = useMonkeyConf();
     const { set, del } = useStore();
+    const navigate = useNavigate();
     const [data, setData] = useState<any>({});
     const { api, state } = useHttpClient();
 
     useEffect(() => {
         if (profile) {
             del(StoreKeys.Profile);
-            api(profile.endpoint, "GET");
+            api(profile.endpoint, 'GET');
         }
     }, []);
 
@@ -37,39 +40,26 @@ export const UserMenu = () => {
                 href="javascript:void(0);"
                 data-bs-toggle="dropdown"
             >
-                <div className="avatar avatar-online">
-                    <img
-                        src="https://www.getbillage.com/files/user/avatar/_usuario.png"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                    />
-                </div>
+                <Avatar name={data?.[profile.firstName]} lastName={data?.[profile.lastName]} />
             </a>
             <ul className="dropdown-menu dropdown-menu-end">
                 <li>
-                    <a
-                        className="dropdown-item"
-                        href="pages-account-settings-account.html"
-                    >
+                    <a className="dropdown-item" href="pages-account-settings-account.html">
                         <div className="d-flex">
                             <div className="flex-shrink-0 me-3">
-                                <div className="avatar avatar-online">
-                                    <img
-                                        src="https://www.getbillage.com/files/user/avatar/_usuario.png"
-                                        alt=""
-                                        className="w-px-40 h-auto rounded-circle"
-                                    />
-                                </div>
+                                <Avatar
+                                    name={data?.[profile.firstName]}
+                                    lastName={data?.[profile.lastName]}
+                                />
                             </div>
                             <div className="flex-grow-1">
                                 <span className="fw-semibold d-block">
-                                    {data[profile.firstName]}{" "}
-                                    {data[profile.lastName]}
+                                    {data[profile.firstName]} {data[profile.lastName]}
                                 </span>
                                 <small className="text-muted">
-                                    {data.roles?.indexOf("admin") >= 0
-                                        ? "Admin"
-                                        : "User"}
+                                    {data.roles?.indexOf(profile.administrator) >= 0
+                                        ? t('Admin')
+                                        : t('User')}
                                 </small>
                             </div>
                         </div>
@@ -78,16 +68,16 @@ export const UserMenu = () => {
                 <li>
                     <div className="dropdown-divider"></div>
                 </li>
-                <li>
+                <li onClick={() => navigate('/my-profile')}>
                     <span className="dropdown-item cursor-pointer">
                         <i className="bx bx-user me-2"></i>
-                        <span className="align-middle">{t("My Profile")}</span>
+                        <span className="align-middle">{t('My Profile')}</span>
                     </span>
                 </li>
                 <li>
                     <span className="dropdown-item cursor-pointer">
                         <i className="bx bx-cog me-2"></i>
-                        <span className="align-middle">{t("Settings")}</span>
+                        <span className="align-middle">{t('Settings')}</span>
                     </span>
                 </li>
                 <li>
@@ -103,7 +93,7 @@ export const UserMenu = () => {
                         }}
                     >
                         <i className="bx bx-power-off me-2"></i>
-                        <span className="align-middle">{t("Log Out")}</span>
+                        <span className="align-middle">{t('Log Out')}</span>
                     </span>
                 </li>
             </ul>

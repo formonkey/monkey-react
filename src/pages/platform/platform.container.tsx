@@ -1,7 +1,5 @@
-import React from "react";
-
-import { Menu, NavBar, Footer } from "../../elements";
-import { PlatformRouter } from "./platform.router";
+import { Menu, NavBar, Footer } from '../../elements';
+import { PlatformRouter } from './platform.router';
 
 export const Platform = () => (
     <div className="layout-wrapper layout-content-navbar">

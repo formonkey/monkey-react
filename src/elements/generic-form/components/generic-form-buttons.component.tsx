@@ -13,14 +13,25 @@ export const GenericFormButtons = ({ config, step, onSubmit, onStep, close, t }:
         <>
             {!config.multiple || step + 1 === config.fields.length ? (
                 <div className="g-2">
-                    <button
-                        type="button"
-                        className="btn m-2 btn-label-secondary"
-                        data-bs-dismiss="modal"
-                        onClick={close}
-                    >
-                        {t('Cancel')}
-                    </button>
+                    {config.multiple && step > 0 ? (
+                        <button
+                            type="button"
+                            className="btn m-2 btn-label-secondary"
+                            data-bs-dismiss="modal"
+                            onClick={onStep}
+                        >
+                            {t('Previous Step')}
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="btn m-2 btn-label-secondary"
+                            data-bs-dismiss="modal"
+                            onClick={close}
+                        >
+                            {t('Cancel')}
+                        </button>
+                    )}
                     <button type="button" className="btn btn-primary" onClick={onSubmit}>
                         {t('Save changes')}
                     </button>

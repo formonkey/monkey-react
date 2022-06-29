@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { RECOVER_PASSWORD_EMAIL_FORM_SCHEMA } from './constants';
 import {

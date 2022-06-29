@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { LOGIN_FORM_EMAIL_SCHEMA } from './constants';
 
@@ -35,21 +35,24 @@ export const Login = Form(LOGIN_FORM_EMAIL_SCHEMA)(
 
         useEffect(() => {
             if (state.data) {
-                console.log('Login Data', state.data);
                 set(StoreKeys.Token, state.data);
+
                 window.location.reload();
             }
         }, [state]);
 
         return (
             <>
-                <h4 className="mb-2">{t('Welcome to')} {name}! 👋</h4>
+                <h4 className="mb-2">
+                    {t('Welcome to')} {name}! 👋
+                </h4>
                 <p className="mb-2">Please sign-in to your account and start the adventure</p>
 
                 <div className="mb-3">
                     <Input
                         t={t}
                         type="text"
+                        form={form}
                         onChange={onChange}
                         name={login.fields[0]}
                         label={login.fields[0]}

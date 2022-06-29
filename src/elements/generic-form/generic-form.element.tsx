@@ -8,17 +8,51 @@ import { useMonkeyConf } from '../monkey-conf';
 import { GenericFormButtons } from './components';
 import { GENERIC_FORM_ELEMENTS, GENERIC_FORM_CONFIG_PARSED } from './constants';
 
-export const GenericForm = ({ config, close, endpoint, values, action, refresh }: any) => {
+export const GenericForm = ({
+    isFilter,
+    config,
+    close,
+    endpoint,
+    values = {},
+    action,
+    refresh,
+    filter,
+}: any) => {
     const { get } = useStore();
     const { t } = useTranslation();
-    const { token } = useMonkeyConf();
+    const { token, queries } = useMonkeyConf();
     const [step, setStep] = useState(0);
-    const [form, setForm] = useState({});
+    const [form, setForm] = useState<any>(values);
     const { api, state } = useHttpClient();
     const [fields, setFields] = useState([]);
 
     const onChange = (e: any) => {
-        setForm({ ...form, ...e });
+        const formData = { ...form, ...e };
+
+        setForm(formData);
+
+        if (isFilter) {
+            if (queries.system === 'eve') {
+                let search = `${queries.pagination.page}=1&${queries.pagination.limit}=${queries.limit}&where={`;
+                let where = '';
+
+                Object.keys(formData).forEach((key) => {
+                    if (formData[key]) {
+                        where += `"${key}":"${formData[key]}",`;
+                    }
+                });
+
+                search += where.slice(0, -1) + '}';
+
+                filter(search);
+            } else if (queries.system === 'django') {
+                let search = `${queries.pagination.page}=0&${queries.pagination.limit}=${
+                    queries.limit
+                }&${new URLSearchParams(formData).toString()}`;
+
+                filter(search);
+            }
+        }
     };
 
     const onStep = (type?: string) => {
@@ -30,7 +64,33 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
     };
 
     const onSubmit = () => {
-        api(endpoint || action.endpoint, action.method, form);
+        if (config.requests?.length) {
+            let endpoint = config.requests[step].endpoint;
+
+            if (config.requests[step].replace) {
+                Object.keys(config.requests[step].replace).forEach((key: string) => {
+                    endpoint = endpoint.replace(key, form[config.requests[step].replace[key]]);
+                });
+            }
+
+            if (config.requests[step].model?.length) {
+                let data = config.requests[step].type === 'array' ? [] : {};
+
+                config.requests[step].model.map((key: string) => {
+                    if (config.requests[step].type === 'array') {
+                        data = [...(data as any[]), ...form[key]];
+                    } else {
+                        (data as any)[key] = form[key];
+                    }
+                });
+
+                api(endpoint, config.requests[step].method, data);
+            } else {
+                api(endpoint, config.requests[step].method, form);
+            }
+        } else {
+            api(endpoint || action.endpoint, action.method, form);
+        }
     };
 
     const setCustomFields = (fields: any) => {
@@ -42,13 +102,15 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
 
         if (tempFields) {
             tempFields.forEach(async (field: any, idx: number) => {
-                if (field.element === 'select' && field.config) {
+                if (['select', 'multi'].includes(field.element) && field.config) {
                     await GENERIC_FORM_CONFIG_PARSED.REQUEST(get, field, token);
                 }
 
-                if (idx === tempFields.length - 1) {
-                    setFields(tempFields);
-                }
+                setTimeout(() => {
+                    if (idx === tempFields.length - 1) {
+                        setFields(tempFields);
+                    }
+                }, 1000);
             });
         }
     };
@@ -61,6 +123,7 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
 
     useEffect(() => {
         if (config.multiple) {
+            setForm({ ...form });
             setCustomFields(config.fields[step]);
         }
     }, [step]);
@@ -75,6 +138,7 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
                     refresh();
                     close();
                 } else {
+                    setForm({ ...form, [config.key]: state.data[config.key] });
                     onStep('next');
                 }
             }
@@ -90,6 +154,7 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
                             ...item,
                             t,
                             onChange,
+                            form: { ...form },
                             value: (form as any)[item.name] || values?.[item.name],
                         })
                     ) : (
@@ -98,14 +163,16 @@ export const GenericForm = ({ config, close, endpoint, values, action, refresh }
                 </div>
             ))}
 
-            <GenericFormButtons
-                t={t}
-                step={step}
-                close={close}
-                config={config}
-                onStep={onStep}
-                onSubmit={onSubmit}
-            />
+            {!isFilter && (
+                <GenericFormButtons
+                    t={t}
+                    step={step}
+                    close={close}
+                    config={config}
+                    onStep={onStep}
+                    onSubmit={onSubmit}
+                />
+            )}
         </div>
     );
 };

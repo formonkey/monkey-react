@@ -5,6 +5,7 @@ export type MonkeyConfProps = {
 export type MonkeyConfState = {
     name: string | undefined;
     token: string;
+    myProfile: any;
     store: {
         prefix: string | undefined;
         system: string | undefined;

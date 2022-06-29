@@ -1,0 +1,1 @@
+export { GenericViewResumen } from './generic-view-resumen.element';

@@ -20,13 +20,17 @@ export const Menu = () => {
 
         setPrivacies([
             ...menu.privacy.filter((privacy: any) =>
-                privacy.permision ? roles.indexOf(privacy.permision) >= 0 : true
+                privacy.permision
+                    ? roles.find((role: string) => privacy.permision.includes(role))
+                    : true
             ),
         ]);
 
         setGenerics([
             ...menu.generic.filter((generic: any) =>
-                generic.permision ? roles.indexOf(generic.permision) >= 0 : true
+                generic.permision
+                    ? roles.find((role: string) => generic.permision.includes(role))
+                    : true
             ),
         ]);
     }, []);
@@ -49,7 +53,7 @@ export const Menu = () => {
             <ul className="menu-inner py-1">
                 {privacies.length && generics.length ? (
                     <li className="menu-header small text-uppercase">
-                        <span className="menu-header-text">{t(menu.privacyName)}</span>
+                        <span className="menu-header-text">{t('Privacy')}</span>
                     </li>
                 ) : null}
 
@@ -101,7 +105,7 @@ export const Menu = () => {
 
                 {generics.length && privacies.length ? (
                     <li className="menu-header small text-uppercase">
-                        <span className="menu-header-text">{t(menu.genericName)}</span>
+                        <span className="menu-header-text">{t('Generics')}</span>
                     </li>
                 ) : null}
 

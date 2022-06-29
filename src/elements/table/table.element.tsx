@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { useModal } from '../modals';
@@ -7,11 +8,13 @@ import { GenericForm } from '../generic-form';
 import { useHttpClient } from '../http-client';
 import { TABLE_ELEMENT_CUSTOM } from './constants';
 
-export const Table = ({ actions, form, config, meta, queries, data, refresh }: any) => {
+export const Table = ({ actions, filters, form, config, meta, queries, data, refresh }: any) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { open, close } = useModal();
     const { api, state } = useHttpClient();
     const [headers, setHeaders] = useState([]);
+    const [filter, setFilter] = useState<any>({});
 
     const [searches, setSearches] = useState<any>({
         [queries.sort.key]: '',
@@ -78,6 +81,10 @@ export const Table = ({ actions, form, config, meta, queries, data, refresh }: a
 
     useEffect(() => {
         setHeaders(config.model.filter((item: any) => item.label));
+
+        return () => {
+            setHeaders([]);
+        };
     }, [config]);
 
     useEffect(() => {
@@ -89,6 +96,20 @@ export const Table = ({ actions, form, config, meta, queries, data, refresh }: a
     useEffect(() => {
         refresh(new URLSearchParams(searches).toString());
     }, [searches]);
+
+    useEffect(() => {
+        if (Object.keys(filter).length) {
+            if (queries.system === 'eve') {
+                const where = `where={"${Object.keys(filter)[0]}": {"$regex": ".*${
+                    filter[Object.keys(filter)[0]]
+                }.*"}}`;
+
+                refresh(
+                    `${queries.pagination.page}=1&${queries.pagination.limit}=${queries.limit}&${where}`
+                );
+            }
+        }
+    }, [filter]);
 
     return (
         <div className="card-datatable table-responsive">
@@ -134,16 +155,25 @@ export const Table = ({ actions, form, config, meta, queries, data, refresh }: a
                         )}
                     </div>
                     <div className="col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-2">
-                        <div id="DataTables_Table_0_filter" className="dataTables_filter">
-                            <label>
-                                <input
-                                    type="search"
-                                    className="form-control"
-                                    placeholder={t('Search...')}
-                                    aria-controls="DataTables_Table_0"
-                                />
-                            </label>
-                        </div>
+                        {filters?.fields?.length === 1 && (
+                            <div id="DataTables_Table_0_filter" className="dataTables_filter">
+                                <label>
+                                    <input
+                                        type="search"
+                                        className="form-control"
+                                        name={filters?.fields?.[0]?.name}
+                                        aria-controls="DataTables_Table_0"
+                                        value={filter?.[filters?.fields?.[0]?.name]}
+                                        placeholder={t(
+                                            filters?.fields?.[0]?.placeholder ?? 'Search...'
+                                        )}
+                                        onChange={(e) => {
+                                            setFilter({ [e.target.name]: e.target.value });
+                                        }}
+                                    />
+                                </label>
+                            </div>
+                        )}
                         <div className="invoice_status mb-3 mb-md-0" />
                     </div>
                 </div>
@@ -201,87 +231,138 @@ export const Table = ({ actions, form, config, meta, queries, data, refresh }: a
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((element: any, idx: number) => (
-                            <tr className="odd" key={idx}>
-                                {headers &&
-                                    headers.map((header: any, idx: number) => (
-                                        <td
-                                            key={idx}
-                                            colSpan={1}
-                                            className={`${header.center ? 'text-center' : ''}`}
-                                        >
-                                            {header.custom
-                                                ? (TABLE_ELEMENT_CUSTOM as any)?.[
-                                                      header.custom.type
-                                                  ](header.custom, element?.[header?.name], element)
-                                                : element?.[header?.name]}
-                                        </td>
-                                    ))}
+                        {data &&
+                            data?.map((element: any, idx: number) => (
+                                <tr className="odd" key={idx}>
+                                    {headers &&
+                                        headers?.map((header: any, idx: number) => (
+                                            <td
+                                                key={idx}
+                                                colSpan={1}
+                                                className={`${header?.center ? 'text-center' : ''}`}
+                                            >
+                                                {header?.custom
+                                                    ? (TABLE_ELEMENT_CUSTOM as any)?.[
+                                                          header?.custom?.type
+                                                      ](
+                                                          header?.custom,
+                                                          element?.[header?.name],
+                                                          element
+                                                      )
+                                                    : element?.[header?.name]}
+                                            </td>
+                                        ))}
 
-                                {actions?.edit || actions?.delete || actions?.show ? (
-                                    <td colSpan={1} className="dataTables_empty text-center">
-                                        <div className="d-flex align-items-center">
-                                            {actions?.show && (
-                                                <span
-                                                    data-bs-toggle="tooltip"
-                                                    className="text-body cursor-pointer"
-                                                    data-bs-placement="top"
-                                                    title=""
-                                                    data-bs-original-title="Preview Invoice"
-                                                    aria-label="Preview Invoice"
-                                                >
-                                                    <i className="bx bx-show mx-1"></i>
-                                                </span>
-                                            )}
-                                            {actions?.edit || actions?.delete ? (
-                                                <div className="dropdown">
-                                                    <a
-                                                        href="javascript:;"
-                                                        className="btn dropdown-toggle hide-arrow text-body p-0"
-                                                        data-bs-toggle="dropdown"
+                                    {actions?.edit || actions?.delete || actions?.show ? (
+                                        <td colSpan={1} className="dataTables_empty text-center">
+                                            <div className="d-flex align-items-center">
+                                                {actions?.show && (
+                                                    <span
+                                                        data-bs-toggle="tooltip"
+                                                        className="text-body cursor-pointer"
+                                                        data-bs-placement="top"
+                                                        title=""
+                                                        data-bs-original-title="Preview Invoice"
+                                                        aria-label="Preview Invoice"
                                                     >
-                                                        <i className="bx bx-dots-vertical-rounded"></i>
-                                                    </a>
-                                                    <div className="dropdown-menu dropdown-menu-end">
-                                                        {actions?.edit ? (
-                                                            <>
+                                                        <i className="bx bx-show mx-1"></i>
+                                                    </span>
+                                                )}
+                                                {actions?.edit || actions?.delete ? (
+                                                    <div className="dropdown">
+                                                        <a
+                                                            href="javascript:;"
+                                                            className="btn dropdown-toggle hide-arrow text-body p-0"
+                                                            data-bs-toggle="dropdown"
+                                                        >
+                                                            <i className="bx bx-dots-vertical-rounded"></i>
+                                                        </a>
+                                                        <div className="dropdown-menu dropdown-menu-end cursor-pointer">
+                                                            {actions?.edit ? (
+                                                                <>
+                                                                    <span
+                                                                        className="dropdown-item"
+                                                                        onClick={() =>
+                                                                            handleAction(
+                                                                                actions.edit,
+                                                                                element
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {t('Edit')}
+                                                                    </span>
+                                                                    {actions?.delete &&
+                                                                    !actions?.custom?.length ? (
+                                                                        <div className="dropdown-divider"></div>
+                                                                    ) : null}
+                                                                </>
+                                                            ) : null}
+                                                            {actions?.custom
+                                                                ? actions?.custom?.map(
+                                                                      (
+                                                                          action: any,
+                                                                          idx: number
+                                                                      ) => (
+                                                                          <div key={idx}>
+                                                                              <span
+                                                                                  className="dropdown-item  cursor-pointer"
+                                                                                  onClick={() => {
+                                                                                      let path =
+                                                                                          action.path;
+                                                                                      Object.keys(
+                                                                                          action.replace
+                                                                                      ).forEach(
+                                                                                          (
+                                                                                              key: string
+                                                                                          ) => {
+                                                                                              path =
+                                                                                                  path.replace(
+                                                                                                      key,
+                                                                                                      element[
+                                                                                                          action
+                                                                                                              .replace[
+                                                                                                              key
+                                                                                                          ]
+                                                                                                      ]
+                                                                                                  );
+                                                                                          }
+                                                                                      );
+
+                                                                                      navigate(
+                                                                                          path
+                                                                                      );
+                                                                                  }}
+                                                                              >
+                                                                                  {t(action.label)}
+                                                                              </span>
+                                                                              {actions?.delete ? (
+                                                                                  <div className="dropdown-divider"></div>
+                                                                              ) : null}
+                                                                          </div>
+                                                                      )
+                                                                  )
+                                                                : null}
+                                                            {actions?.delete ? (
                                                                 <span
-                                                                    className="dropdown-item"
+                                                                    className="dropdown-item delete-record text-danger  cursor-pointer"
                                                                     onClick={() =>
                                                                         handleAction(
-                                                                            actions.edit,
+                                                                            actions.delete,
                                                                             element
                                                                         )
                                                                     }
                                                                 >
-                                                                    {t('Edit')}
+                                                                    {t('Delete')}
                                                                 </span>
-                                                                {actions?.delete ? (
-                                                                    <div className="dropdown-divider"></div>
-                                                                ) : null}
-                                                            </>
-                                                        ) : null}
-                                                        {actions?.delete ? (
-                                                            <span
-                                                                className="dropdown-item delete-record text-danger"
-                                                                onClick={() =>
-                                                                    handleAction(
-                                                                        actions.delete,
-                                                                        element
-                                                                    )
-                                                                }
-                                                            >
-                                                                {t('Delete')}
-                                                            </span>
-                                                        ) : null}
+                                                            ) : null}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    </td>
-                                ) : null}
-                            </tr>
-                        ))}
+                                                ) : null}
+                                            </div>
+                                        </td>
+                                    ) : null}
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
                 <div className="row mx-2 pt-4">

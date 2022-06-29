@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { RecoverPasswordRouter } from '../enums';
 import { Login, RecoverPassword, ResetPassword } from '../../../authentication';
 

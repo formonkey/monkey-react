@@ -1,2 +1,2 @@
 /// <reference types="react" />
-export declare const Datepicker: ({ type }: any) => JSX.Element;
+export declare const Datepicker: ({ name, type, onChange, format, label }: any) => JSX.Element;
