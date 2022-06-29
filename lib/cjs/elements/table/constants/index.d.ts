@@ -4,4 +4,5 @@ export declare const TABLE_ELEMENT_CUSTOM: {
     parsed: (conf: any, value: string) => string;
     boolean: (_: any, value: boolean) => JSX.Element;
     tags: (conf: any, value: any[]) => JSX.Element[];
+    avatar: (conf: any, value: string, data: any) => JSX.Element;
 };

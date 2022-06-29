@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import React, { Routes, Route } from 'react-router-dom';
 
 import { MyProfile } from '../my-profile';
 import { GenericDetail, GenericView, NoData, useMonkeyConf } from '../../elements';

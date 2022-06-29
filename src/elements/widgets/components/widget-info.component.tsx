@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useStore } from '../../store';
+import React from 'react';
+
 import { WIDGET_INFO_PARSED } from '../constants';
 
 export const WidgetInfo = ({ t, conf, idx }: any) => {

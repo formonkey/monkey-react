@@ -442,6 +442,11 @@ unload@2.2.0:
     "@babel/runtime" "^7.6.2"
     detect-node "^2.0.4"
 
+use-file-upload@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/use-file-upload/-/use-file-upload-1.0.11.tgz#6d1ca8644256ad480e2be1a0a1609315b038aa73"
+  integrity sha512-Q8Rueyo1FC9zMdpFEBEVDTSFsstTf29TUnCsjo468buqbjpZREvvAZ+ELyABVf3HmNygvJKeOARp9Q80lo14kw==
+
 void-elements@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-3.1.0.tgz#614f7fbf8d801f0bb5f0661f5b2f5785750e4f09"

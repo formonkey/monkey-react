@@ -1,6 +1,6 @@
 {
     "name": "@mokey/react",
-    "version": "0.0.14",
+    "version": "0.0.16",
     "description": "Monkey react library",
     "author": "Isaac Martín",
     "license": "MIT",
@@ -12,7 +12,7 @@
         "build": "yarn build:esm && yarn build:cjs",
         "build:esm": "tsc",
         "build:cjs": "tsc --module commonjs --outDir lib/cjs",
-        "publish": "npm publish --access public"
+        "publish:public": "npm publish --access public"
     },
     "devDependencies": {
         "@types/node": "^18.0.0",
@@ -25,7 +25,8 @@
         "react-query": "^3.39.1",
         "react-router-dom": "^6.3.0",
         "typescript": "^4.7.3",
-        "zod": "^3.17.3"
+        "zod": "^3.17.3",
+        "use-file-upload": "^1.0.11"
     },
     "peerDependencies": {
         "@types/react": "^18.0.12",
@@ -35,7 +36,8 @@
         "react-i18next": "^11.17.2",
         "react-query": "^3.39.1",
         "react-router-dom": "^6.3.0",
-        "zod": "^3.17.3"
+        "zod": "^3.17.3",
+        "use-file-upload": "^1.0.11"
     },
     "dependencies": {
         "concurrently": "^7.2.2"

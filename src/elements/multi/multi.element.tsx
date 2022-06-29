@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 export const Multi = ({ t, name, form, config, onChange, label, data, value }: any) => {
     const [ref, setRef] = useState<any>();

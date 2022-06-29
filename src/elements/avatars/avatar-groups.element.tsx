@@ -11,7 +11,7 @@ export const AvatarGroups = ({ conf, data }: any) => {
         setTimeout(() => {
             [].slice
                 .call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-                .map(function (tooltipTriggerEl) {
+                .map(function (tooltipTriggerEl: any) {
                     return new (window as any).bootstrap.Tooltip(tooltipTriggerEl);
                 });
         }, 200);

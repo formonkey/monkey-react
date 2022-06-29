@@ -1,8 +1,8 @@
 import { MonkeyConfState } from '../types';
 
 export const useMonkeyConf = <T>(): MonkeyConfState | T => {
-    //const conf = require(`./../../../../../../../../${(process as any).env.REACT_APP_MOKEY}`)
-    const conf = require(`../../../../../${(process as any).env.REACT_APP_MOKEY}`)
+    const conf = require(`./../../../../../../../../${(process as any).env.REACT_APP_MOKEY}`)
+    //const conf = require(`../../../../../${(process as any).env.REACT_APP_MOKEY}`)
 
     return {
         name: conf.name,

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { useMonkeyConf } from '../../elements';
 import { AuthenticationRouter } from './authentication.router';
 

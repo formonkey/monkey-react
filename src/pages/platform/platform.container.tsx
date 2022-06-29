@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Menu, NavBar, Footer } from '../../elements';
 import { PlatformRouter } from './platform.router';
 

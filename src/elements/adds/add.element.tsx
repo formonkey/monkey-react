@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export const Add = ({ t, name, form, keys, label, onChange }: any) => {
     const handleClick = () => {

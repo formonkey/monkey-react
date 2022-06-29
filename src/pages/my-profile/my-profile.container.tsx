@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { useTranslation } from 'react-i18next';
-import { useFileUpload } from 'use-file-upload';
+import { useTranslation } from "react-i18next";
+import { useFileUpload } from "use-file-upload";
 
-import { useMonkeyConf, useStore, StoreKeys, Widgets } from '../../elements';
-import { Avatar } from '../../elements/avatars';
+import { useMonkeyConf, useStore, StoreKeys, Widgets } from "../../elements";
+import { Avatar } from "../../elements/avatars";
 
 export const MyProfile = () => {
     const { myProfile: conf } = useMonkeyConf();
-    const [file, selectFile] = useFileUpload();
-
+    
     const { get } = useStore();
     const { t } = useTranslation();
     const [data, setData] = useState<any>({});
+    const [file, selectFile] = useFileUpload();
     const [current, setCurrent] = useState(conf.tabs[0]?.name);
     const [widgetConf, setWidgetConf] = useState<any>(conf.tabs[0]);
 
@@ -25,7 +25,7 @@ export const MyProfile = () => {
     }, []);
 
     useEffect(() => {
-        console.log('My profile file', file);
+        console.log("My profile file", file);
     }, [file]);
 
     return (
@@ -51,25 +51,29 @@ export const MyProfile = () => {
                             <div className="flex-grow-1 mt-3 mt-sm-3">
                                 <div className="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
                                     <div className="user-profile-info">
-                                        <h4>{`${data[conf.name]} ${data[conf.lastName]}`}</h4>
+                                        <h4>{`${data[conf.name]} ${
+                                            data[conf.lastName]
+                                        }`}</h4>
                                         <div className="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2">
-                                            {conf.actions?.map((action: any, idx: number) =>
-                                                action.type === 'upload' ? (
-                                                    <button
-                                                        key={idx}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            selectFile(
-                                                                action.accept,
-                                                                action.multiple
-                                                            )
-                                                        }
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                    >
-                                                        <span className="tf-icons bx bx-image" />
-                                                        &nbsp; {t(action.label)}
-                                                    </button>
-                                                ) : null
+                                            {conf.actions?.map(
+                                                (action: any, idx: number) =>
+                                                    action.type === "upload" ? (
+                                                        <button
+                                                            key={idx}
+                                                            type="button"
+                                                            onClick={() =>
+                                                                selectFile(
+                                                                    action.accept as any,
+                                                                    action.multiple as any
+                                                                )
+                                                            }
+                                                            className="btn btn-sm btn-outline-secondary"
+                                                        >
+                                                            <span className="tf-icons bx bx-image" />
+                                                            &nbsp;{" "}
+                                                            {t(action.label)}
+                                                        </button>
+                                                    ) : null
                                             )}
                                         </div>
                                     </div>
@@ -95,7 +99,7 @@ export const MyProfile = () => {
                                 >
                                     <span
                                         className={`nav-link cursor-pointer ${
-                                            current === tab.name ? 'active' : ''
+                                            current === tab.name ? "active" : ""
                                         }`}
                                     >
                                         <i className={`bx bx-${tab.icon}`} />
@@ -108,7 +112,9 @@ export const MyProfile = () => {
                 </div>
             ) : null}
 
-            {widgetConf?.widgets && <Widgets id={data[conf.id]} conf={widgetConf} />}
+            {widgetConf?.widgets && (
+                <Widgets id={data[conf.id]} conf={widgetConf} />
+            )}
         </>
     );
 };
