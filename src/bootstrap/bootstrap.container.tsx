@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Authentication, Platform } from '../pages';
 import { MonkeyConf, useStore, StoreKeys } from '../elements';
 
-export const Bootstrap = () => {
+export const Bootstrap = ({ customRoutes = {} }: { [name: string]: any }) => {
     const { get } = useStore();
     const [logged, setLogged] = useState<boolean>(false);
 
@@ -19,7 +19,7 @@ export const Bootstrap = () => {
         <MonkeyConf>
             {logged ? (
                 <Router>
-                    <Platform />
+                    <Platform customRoutes={customRoutes} />
                 </Router>
             ) : (
                 <Router>

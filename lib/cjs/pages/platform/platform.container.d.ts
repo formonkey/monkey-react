@@ -1,2 +1,2 @@
 /// <reference types="react" />
-export declare const Platform: () => JSX.Element;
+export declare const Platform: ({ customRoutes }: any) => JSX.Element;

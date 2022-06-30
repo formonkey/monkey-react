@@ -1,9 +1,16 @@
-import React, { Routes, Route } from 'react-router-dom';
+import React from "react";
 
-import { MyProfile } from '../my-profile';
-import { GenericDetail, GenericView, NoData, useMonkeyConf } from '../../elements';
+import { Routes, Route } from "react-router-dom";
 
-export const PlatformRouter = () => {
+import { MyProfile } from "../my-profile";
+import {
+    GenericDetail,
+    GenericView,
+    NoData,
+    useMonkeyConf,
+} from "../../elements";
+
+export const PlatformRouter = ({ customRoutes }: any) => {
     const {
         menu: { privacy, generic },
     } = useMonkeyConf();
@@ -17,18 +24,45 @@ export const PlatformRouter = () => {
                             <>
                                 <Route
                                     key={`${index}-${idx}`}
-                                    element={<GenericView {...child} />}
-                                    path={`${element.path ?? ''}${child.path}`}
+                                    element={
+                                        customRoutes[
+                                            `${element.path ?? ""}${child.path}`
+                                        ] ? (
+                                            customRoutes[
+                                                `${element.path ?? ""}${
+                                                    child.path
+                                                }`
+                                            ](child)
+                                        ) : (
+                                            <GenericView {...child} />
+                                        )
+                                    }
+                                    path={`${element.path ?? ""}${child.path}`}
                                 />
 
                                 {child.actions?.custom?.length
-                                    ? child.actions.custom.map((action: any, cidx: number) => (
-                                          <Route
-                                              key={`${index}-${idx}-${cidx}`}
-                                              element={<GenericDetail {...action} />}
-                                              path={action.path}
-                                          />
-                                      ))
+                                    ? child.actions.custom.map(
+                                          (action: any, cidx: number) => (
+                                              <Route
+                                                  key={`${index}-${idx}-${cidx}`}
+                                                  element={
+                                                      customRoutes[
+                                                          action.path
+                                                      ] ? (
+                                                          customRoutes[
+                                                              action.path
+                                                          ](child)
+                                                      ) : (
+                                                          <GenericDetail
+                                                              action={action}
+                                                              config={child}
+                                                          />
+                                                      )
+                                                  }
+                                                  path={action.path}
+                                              />
+                                          )
+                                      )
                                     : null}
                             </>
                         );
@@ -38,17 +72,37 @@ export const PlatformRouter = () => {
                         <Route
                             key={index}
                             path={element.path}
-                            element={<GenericView {...element} />}
+                            element={
+                                customRoutes[element.path] ? (
+                                    customRoutes[element.path](element)
+                                ) : (
+                                    <GenericView {...element} />
+                                )
+                            }
                         />
 
                         {element.actions?.custom?.length
-                            ? element.actions.custom.map((action: any, idx: number) => (
-                                  <Route
-                                      key={`${idx}`}
-                                      path={action.path}
-                                      element={<GenericDetail action={action} config={element} />}
-                                  />
-                              ))
+                            ? element.actions.custom.map(
+                                  (action: any, idx: number) => (
+                                      <Route
+                                          key={`${idx}`}
+                                          path={action.path}
+                                          element={
+                                              customRoutes[action.path] ? (
+                                                  customRoutes[action.path]({
+                                                      action,
+                                                      element,
+                                                  })
+                                              ) : (
+                                                  <GenericDetail
+                                                      action={action}
+                                                      config={element}
+                                                  />
+                                              )
+                                          }
+                                      />
+                                  )
+                              )
                             : null}
                     </>
                 );

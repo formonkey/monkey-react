@@ -59,48 +59,57 @@ export const Menu = () => {
 
                 {privacies.map(
                     (
-                        element: { name: string; path: string; icon: string; children: any[] },
+                        element: {
+                            menu: boolean;
+                            name: string;
+                            path: string;
+                            icon: string;
+                            children: any[];
+                        },
                         index: number
-                    ) => (
-                        <li
-                            className={`menu-item ${pathname === element.path && 'active'} ${
-                                open === element.path && 'open'
-                            }`}
-                            key={index}
-                        >
-                            {element.children ? (
-                                <>
-                                    <a
-                                        className="menu-link menu-toggle cursor-pointer"
-                                        onClick={() =>
-                                            setOpen(open !== element.path ? element.path : '')
-                                        }
-                                    >
+                    ) =>
+                        element.menu !== false ? (
+                            <li
+                                className={`menu-item ${pathname === element.path && 'active'} ${
+                                    open === element.path && 'open'
+                                }`}
+                                key={index}
+                            >
+                                {element.children ? (
+                                    <>
+                                        <a
+                                            className="menu-link menu-toggle cursor-pointer"
+                                            onClick={() =>
+                                                setOpen(open !== element.path ? element.path : '')
+                                            }
+                                        >
+                                            <i
+                                                className={`menu-icon tf-icons bx ${element.icon}`}
+                                            ></i>
+                                            <div>{t(element.name)}</div>
+                                        </a>
+
+                                        <ul className="menu-sub">
+                                            {element.children.map((child) => (
+                                                <li className="menu-item">
+                                                    <Link
+                                                        to={`${element.path}${child.path}`}
+                                                        className="menu-link"
+                                                    >
+                                                        <div>{t(child.name)}</div>
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                ) : (
+                                    <Link to={element.path} className="menu-link">
                                         <i className={`menu-icon tf-icons bx ${element.icon}`}></i>
                                         <div>{t(element.name)}</div>
-                                    </a>
-
-                                    <ul className="menu-sub">
-                                        {element.children.map((child) => (
-                                            <li className="menu-item">
-                                                <Link
-                                                    to={`${element.path}${child.path}`}
-                                                    className="menu-link"
-                                                >
-                                                    <div>{t(child.name)}</div>
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </>
-                            ) : (
-                                <Link to={element.path} className="menu-link">
-                                    <i className={`menu-icon tf-icons bx ${element.icon}`}></i>
-                                    <div>{t(element.name)}</div>
-                                </Link>
-                            )}
-                        </li>
-                    )
+                                    </Link>
+                                )}
+                            </li>
+                        ) : null
                 )}
 
                 {generics.length && privacies.length ? (
@@ -111,53 +120,63 @@ export const Menu = () => {
 
                 {generics.map(
                     (
-                        element: { name: string; path: string; icon: string; children: any[] },
+                        element: {
+                            menu: boolean;
+                            name: string;
+                            path: string;
+                            icon: string;
+                            children: any[];
+                        },
                         index: number
-                    ) => (
-                        <li
-                            className={`menu-item ${pathname.match(element.path) && 'active'} ${
-                                open === element.path && 'open'
-                            }`}
-                            key={index}
-                        >
-                            {element.children ? (
-                                <>
-                                    <a
-                                        className="menu-link menu-toggle cursor-pointer"
-                                        onClick={() =>
-                                            setOpen(open !== element.path ? element.path : '')
-                                        }
-                                    >
+                    ) =>
+                        element.menu !== false ? (
+                            <li
+                                className={`menu-item ${pathname.match(element.path) && 'active'} ${
+                                    open === element.path && 'open'
+                                }`}
+                                key={index}
+                            >
+                                {element.children ? (
+                                    <>
+                                        <a
+                                            className="menu-link menu-toggle cursor-pointer"
+                                            onClick={() =>
+                                                setOpen(open !== element.path ? element.path : '')
+                                            }
+                                        >
+                                            <i
+                                                className={`menu-icon tf-icons bx ${element.icon}`}
+                                            ></i>
+                                            <div>{t(element.name)}</div>
+                                        </a>
+
+                                        <ul className="menu-sub">
+                                            {element.children.map((child) => (
+                                                <li
+                                                    className={`menu-item ${
+                                                        pathname ===
+                                                            `${element.path}${child.path}` &&
+                                                        'active'
+                                                    }`}
+                                                >
+                                                    <Link
+                                                        to={`${element.path}${child.path}`}
+                                                        className="menu-link"
+                                                    >
+                                                        <div>{t(child.name)}</div>
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                ) : (
+                                    <Link to={element.path} className="menu-link">
                                         <i className={`menu-icon tf-icons bx ${element.icon}`}></i>
                                         <div>{t(element.name)}</div>
-                                    </a>
-
-                                    <ul className="menu-sub">
-                                        {element.children.map((child) => (
-                                            <li
-                                                className={`menu-item ${
-                                                    pathname === `${element.path}${child.path}` &&
-                                                    'active'
-                                                }`}
-                                            >
-                                                <Link
-                                                    to={`${element.path}${child.path}`}
-                                                    className="menu-link"
-                                                >
-                                                    <div>{t(child.name)}</div>
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </>
-                            ) : (
-                                <Link to={element.path} className="menu-link">
-                                    <i className={`menu-icon tf-icons bx ${element.icon}`}></i>
-                                    <div>{t(element.name)}</div>
-                                </Link>
-                            )}
-                        </li>
-                    )
+                                    </Link>
+                                )}
+                            </li>
+                        ) : null
                 )}
             </ul>
 
