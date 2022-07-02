@@ -11,7 +11,7 @@ export const Select = ({ t, label, name, value, onChange, data = [], ...props }:
                 {t(label)}
             </label>
             <select id={name} name={name} className="form-select" onChange={handleChange}>
-                <option selected={!value}>{t('Selected value')}</option>
+                <option value="" selected={!value}>{t('Selected value')}</option>
                 {data.map((item: any) => (
                     <option
                         value={item.value}

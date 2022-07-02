@@ -50,7 +50,7 @@ export const Menu = () => {
 
             <div className="menu-inner-shadow" />
 
-            <ul className="menu-inner py-1">
+            <ul className="menu-inner py-1" style={{ overflow: 'scroll', height: '100%' }}>
                 {privacies.length && generics.length ? (
                     <li className="menu-header small text-uppercase">
                         <span className="menu-header-text">{t('Privacy')}</span>

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { useStore } from '../store';
-import { useHttpClient } from '../http-client';
-import { useMonkeyConf } from '../monkey-conf';
-import { GenericFormButtons } from './components';
-import { GENERIC_FORM_ELEMENTS, GENERIC_FORM_CONFIG_PARSED } from './constants';
+import { useStore } from "../store";
+import { useHttpClient } from "../http-client";
+import { useMonkeyConf } from "../monkey-conf";
+import { GenericFormButtons } from "./components";
+import { GENERIC_FORM_ELEMENTS, GENERIC_FORM_CONFIG_PARSED } from "./constants";
 
 export const GenericForm = ({
     isFilter,
@@ -22,7 +22,7 @@ export const GenericForm = ({
     const { t } = useTranslation();
     const { token, queries } = useMonkeyConf();
     const [step, setStep] = useState(0);
-    const [form, setForm] = useState<any>(values);
+    const [form, setForm] = useState<any>({});
     const { api, state } = useHttpClient();
     const [fields, setFields] = useState([]);
 
@@ -32,9 +32,9 @@ export const GenericForm = ({
         setForm(formData);
 
         if (isFilter) {
-            if (queries.system === 'eve') {
+            if (queries.system === "eve") {
                 let search = `${queries.pagination.page}=1&${queries.pagination.limit}=${queries.limit}&where={`;
-                let where = '';
+                let where = "";
 
                 Object.keys(formData).forEach((key) => {
                     if (formData[key]) {
@@ -42,13 +42,13 @@ export const GenericForm = ({
                     }
                 });
 
-                search += where.slice(0, -1) + '}';
+                search += where.slice(0, -1) + "}";
 
                 filter(search);
-            } else if (queries.system === 'django') {
-                let search = `${queries.pagination.page}=0&${queries.pagination.limit}=${
-                    queries.limit
-                }&${new URLSearchParams(formData).toString()}`;
+            } else if (queries.system === "django") {
+                let search = `${queries.pagination.page}=0&${
+                    queries.pagination.limit
+                }=${queries.limit}&${new URLSearchParams(formData).toString()}`;
 
                 filter(search);
             }
@@ -56,7 +56,7 @@ export const GenericForm = ({
     };
 
     const onStep = (type?: string) => {
-        if (type === 'next') {
+        if (type === "next") {
             setStep(step + 1);
         } else if (step > 0) {
             setStep(step - 1);
@@ -68,16 +68,21 @@ export const GenericForm = ({
             let endpoint = config.requests[step].endpoint;
 
             if (config.requests[step].replace) {
-                Object.keys(config.requests[step].replace).forEach((key: string) => {
-                    endpoint = endpoint.replace(key, form[config.requests[step].replace[key]]);
-                });
+                Object.keys(config.requests[step].replace).forEach(
+                    (key: string) => {
+                        endpoint = endpoint.replace(
+                            key,
+                            form[config.requests[step].replace[key]]
+                        );
+                    }
+                );
             }
 
             if (config.requests[step].model?.length) {
-                let data = config.requests[step].type === 'array' ? [] : {};
+                let data = config.requests[step].type === "array" ? [] : {};
 
                 config.requests[step].model.map((key: string) => {
-                    if (config.requests[step].type === 'array') {
+                    if (config.requests[step].type === "array") {
                         data = [...(data as any[]), ...form[key]];
                     } else {
                         (data as any)[key] = form[key];
@@ -96,13 +101,18 @@ export const GenericForm = ({
     const setCustomFields = (fields: any) => {
         let tempFields = fields;
 
-        if (['PUT', 'PATCH'].includes(action.method)) {
-            tempFields = fields.filter((field: any) => field.editable !== false);
+        if (["PUT", "PATCH"].includes(action.method)) {
+            tempFields = fields.filter(
+                (field: any) => field.editable !== false
+            );
         }
 
         if (tempFields) {
             tempFields.forEach(async (field: any, idx: number) => {
-                if (['select', 'multi'].includes(field.element) && field.config) {
+                if (
+                    ["select", "multi"].includes(field.element) &&
+                    field.config
+                ) {
                     await GENERIC_FORM_CONFIG_PARSED.REQUEST(get, field, token);
                 }
 
@@ -116,10 +126,24 @@ export const GenericForm = ({
     };
 
     useEffect(() => {
+        let temp: any = {};
+
+        Object.keys(values).forEach((key: string) => {
+            if (Array.isArray(values[key])) {
+                temp[key] = values[key].map((item: any) => item?.id || item);
+            } else {
+                temp[key] = values[key]?.id || values[key];
+            }
+        });
+
+        setForm({ ...temp });
+    }, [values]);
+
+    useEffect(() => {
         if (!config.multiple) {
             setCustomFields(config.fields);
         }
-    }, []);
+    }, [step]);
 
     useEffect(() => {
         if (config.multiple) {
@@ -129,7 +153,11 @@ export const GenericForm = ({
     }, [step]);
 
     useEffect(() => {
-        if ((state.path === endpoint || action.endpoint) && state.data && !state.isLoading) {
+        if (
+            (state.path === endpoint || action.endpoint) &&
+            state.data &&
+            !state.isLoading
+        ) {
             if (!config.async) {
                 refresh();
                 close();
@@ -139,7 +167,7 @@ export const GenericForm = ({
                     close();
                 } else {
                     setForm({ ...form, [config.key]: state.data[config.key] });
-                    onStep('next');
+                    onStep("next");
                 }
             }
         }
@@ -148,19 +176,7 @@ export const GenericForm = ({
     return (
         <div className="row fv-plugins-bootstrap5 fv-plugins-framework">
             {fields.map((item: any, index: number) => (
-                <div className={`col-12 col-md-${item.row}`} key={index}>
-                    {(GENERIC_FORM_ELEMENTS as any)[item.element] ? (
-                        (GENERIC_FORM_ELEMENTS as any)[item.element]({
-                            ...item,
-                            t,
-                            onChange,
-                            form: { ...form },
-                            value: (form as any)[item.name] || values?.[item.name],
-                        })
-                    ) : (
-                        <></>
-                    )}
-                </div>
+                <div className={`col-12 col-md-${item.row}`} key={index}></div>
             ))}
 
             {!isFilter && (

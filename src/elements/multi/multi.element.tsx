@@ -6,9 +6,10 @@ export const Multi = ({ t, name, form, config, onChange, label, data, value }: a
     const [open, setOpen] = useState<boolean>(false);
     const [focused, setFocused] = useState<number>(0);
     const [selecteds, setSelecteds] = useState<any>([]);
-    const [values, setValues] = useState<any>(value || []);
+    const [values, setValues] = useState<any>([]);
 
     const handleClick = (element: { value: string; label: string }) => {
+        console.log('[Generic Form] multi check selecteds', selecteds, element);
         if (!selecteds.includes(element.label)) {
             setValues([...values, element.value]);
         } else {
@@ -22,6 +23,7 @@ export const Multi = ({ t, name, form, config, onChange, label, data, value }: a
     };
 
     const onRemove = (idx: number) => {
+        setValues(values.filter((_: string, i: number) => i !== idx));
         setSelecteds(selecteds.filter((_: string, i: number) => i !== idx));
         setOpen(false);
     };
@@ -33,14 +35,20 @@ export const Multi = ({ t, name, form, config, onChange, label, data, value }: a
     }, [ref]);
 
     useEffect(() => {
-        data.map((element: any) => {
-            if (values.includes(element.value)) {
-                setSelecteds([...selecteds, element.label]);
-            }
-        });
+        const temp = data
+            .filter((element: { value: string; label: string }) => values.includes(element.value))
+            .map((element: any) => element.label);
+
+        setSelecteds(temp);
 
         setTimeout(() => setTop(ref.offsetHeight), 200);
     }, [values]);
+
+    useEffect(() => {
+        if (values.length == 0) {
+            setValues(value.map((item: any) => item?.id || item));
+        }
+    }, [value]);
 
     return (
         <>
